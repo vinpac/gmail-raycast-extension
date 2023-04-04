@@ -2,7 +2,7 @@ import { Action, ActionPanel, Icon, List } from '@raycast/api'
 import { withGmailCredentials } from './lib/withGoogleCredentials'
 import { useGoogleAPI } from './lib/useGoogleAPI'
 import { useMemo, useState } from 'react'
-import { emojiList } from './lib/emojiList'
+import { emojis } from './lib/emojis'
 import { Label, WatchedLabel } from './types'
 import { getCachedWatchedLabels, setCachedWatchedLabels } from './cache'
 import { useLabelsEmojis } from './lib/useLabelEmojis'
@@ -118,9 +118,9 @@ function Configure() {
                     }}
                   />
                   <ActionPanel.Submenu title="Set Emoji">
-                    {emojiList.map((emoji) => (
+                    {emojis.map(({ emoji, description }) => (
                       <Action
-                        title={emoji}
+                        title={`${emoji} ${description}` as string}
                         onAction={() => {
                           setLabelEmoji(label, emoji)
                         }}
