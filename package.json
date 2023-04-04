@@ -1,0 +1,49 @@
+{
+  "$schema": "https://www.raycast.com/schemas/extension.json",
+  "name": "gmail",
+  "title": "Gmail",
+  "description": "Show unread mails on menu bar",
+  "icon": "gmail.png",
+  "author": "vinpac",
+  "categories": [
+    "Communication",
+    "Productivity",
+    "Web"
+  ],
+  "license": "MIT",
+  "commands": [
+    {
+      "name": "configure",
+      "title": "Configure gmail unread count",
+      "description": "Set which labels should be watched",
+      "mode": "view"
+    },
+    {
+      "name": "index",
+      "title": "Show unread mails on menu bar",
+      "description": "Showing unread mails on menu bar",
+      "mode": "menu-bar",
+      "interval": "60s"
+    }
+  ],
+  "dependencies": {
+    "@raycast/api": "^1.49.1",
+    "@raycast/utils": "^1.4.8",
+    "node-fetch": "^3.3.1"
+  },
+  "devDependencies": {
+    "@raycast/eslint-config": "1.0.5",
+    "@types/node": "18.8.3",
+    "@types/react": "18.0.9",
+    "eslint": "^7.32.0",
+    "prettier": "^2.5.1",
+    "typescript": "^4.4.3"
+  },
+  "scripts": {
+    "build": "ray build -e dist",
+    "dev": "ray develop",
+    "fix-lint": "ray lint --fix",
+    "lint": "ray lint",
+    "publish": "npx @raycast/api@latest publish"
+  }
+}
