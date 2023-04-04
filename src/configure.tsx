@@ -3,8 +3,9 @@ import { withGmailCredentials } from './lib/withGoogleCredentials'
 import { useGoogleAPI } from './lib/useGoogleAPI'
 import { useMemo, useState } from 'react'
 import { emojiList } from './lib/emojiList'
-import { Label, LabelsEmojis, WatchedLabel } from './types'
-import { getCachedLabelEmojis, getCachedWatchedLabels, setCachedLabelEmojis, setCachedWatchedLabels } from './cache'
+import { Label, WatchedLabel } from './types'
+import { getCachedWatchedLabels, setCachedWatchedLabels } from './cache'
+import { useLabelsEmojis } from './lib/useLabelEmojis'
 
 const useAllLabels = () => {
   const query = useGoogleAPI<{
@@ -33,21 +34,11 @@ function useWatchedLabels() {
   return [watchedLabels, setPersistedWatchedLabels] as const
 }
 
-function useLabelsEmojis() {
-  const [labelEmojis, setLabelEmojis] = useState<LabelsEmojis>(() => getCachedLabelEmojis())
-  const setPersistedLabelEmojis = (labelEmojis: LabelsEmojis) => {
-    setCachedLabelEmojis(labelEmojis)
-    setLabelEmojis(labelEmojis)
-  }
-
-  return [labelEmojis, setPersistedLabelEmojis] as const
-}
-
 function Configure() {
   const { labels, isLoading } = useAllLabels()
   const [typeFilter, setTypeFilter] = useState<string | undefined>(undefined)
   const [wachedLabels, setWatchedLabels] = useWatchedLabels()
-  const [labelEmojis, setLabelEmojis] = useLabelsEmojis()
+  const { getLabelEmoji, labelEmojis, setLabelEmojis } = useLabelsEmojis()
   const wachedLabelIds = useMemo(() => wachedLabels.map((label) => label.id), [wachedLabels])
   const labelsTypes = useMemo(() => {
     const set = new Set<string>()
@@ -113,11 +104,10 @@ function Configure() {
     return (
       <List.Section title={title} subtitle={`${items.length} labels`}>
         {items.map((label) => {
-          const emoji = labelEmojis[label.id]
           return (
             <List.Item
               key={label.id}
-              title={emoji ? `${emoji} ${label.name}` : label.name}
+              title={`${getLabelEmoji(label.id)}  ${label.name}`}
               subtitle={label.type}
               actions={
                 <ActionPanel>

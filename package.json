@@ -14,13 +14,13 @@
   "commands": [
     {
       "name": "configure",
-      "title": "Configure gmail unread count",
+      "title": "Set Watched Gmail Labels",
       "description": "Set which labels should be watched",
       "mode": "view"
     },
     {
       "name": "index",
-      "title": "Show unread mails on menu bar",
+      "title": "Show Gmail Labels On Menu Bar",
       "description": "Showing unread mails on menu bar",
       "mode": "menu-bar",
       "interval": "60s"
