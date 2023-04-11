@@ -1,11 +1,10 @@
 import { OAuth } from '@raycast/api'
 import fetch from 'node-fetch'
 
-const clientId = '510938597000-7mtersrf3ailvkge26lgtk19b78cjn06.apps.googleusercontent.com'
-const clientSecret = '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'
+const clientId = '510938597000-vv5htokjbkmtpcs5r9v096nau4ef1ajd.apps.googleusercontent.com'
 
 export const oauthClient = new OAuth.PKCEClient({
-  redirectMethod: OAuth.RedirectMethod.Web,
+  redirectMethod: OAuth.RedirectMethod.AppURI,
   providerName: 'Gmail',
   providerIcon: 'gmail.png',
   providerId: 'Gmail',
@@ -26,13 +25,9 @@ export async function authorize() {
   }
 
   const authRequest = await oauthClient.authorizationRequest({
-    endpoint: 'https://accounts.google.com/o/oauth2/auth',
+    endpoint: 'https://accounts.google.com/o/oauth2/v2/auth',
     clientId,
-    scope: 'email https://www.googleapis.com/auth/gmail.readonly',
-    extraParameters: {
-      access_type: 'offline',
-      prompt: 'consent',
-    },
+    scope: 'https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/gmail.readonly',
   })
 
   const { authorizationCode } = await oauthClient.authorize(authRequest)
@@ -49,7 +44,6 @@ async function fetchTokens(authRequest: OAuth.AuthorizationRequest, authCode: st
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
       client_id: clientId,
-      client_secret: clientSecret,
       code: authCode,
       code_verifier: authRequest.codeVerifier,
       grant_type: 'authorization_code',
@@ -72,14 +66,19 @@ async function refreshTokens(refreshToken: string): Promise<OAuth.TokenResponse>
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
       client_id: clientId,
-      client_secret: clientSecret,
       refresh_token: refreshToken,
       grant_type: 'refresh_token',
     }),
   })
 
   if (!response.ok) {
-    console.error('refresh tokens error:', await response.text())
+    const json = (await response.json()) as Record<string, string>
+    console.error('refresh tokens error:', json)
+
+    if (json.error === 'invalid_request') {
+      oauthClient.removeTokens()
+    }
+
     throw new Error(response.statusText)
   }
 

@@ -27,6 +27,7 @@ const useAllLabels = () => {
 function useWatchedLabels() {
   const [watchedLabels, setWatchedLabels] = useState<WatchedLabel[]>(() => getCachedWatchedLabels())
   const setPersistedWatchedLabels = (labels: WatchedLabel[]) => {
+    console.log({ labels })
     setCachedWatchedLabels(labels)
     setWatchedLabels(labels)
   }
@@ -120,6 +121,7 @@ function Configure() {
                   <ActionPanel.Submenu title="Set Emoji">
                     {emojis.map(({ emoji, description }) => (
                       <Action
+                        key={emoji}
                         title={`${emoji} ${description}` as string}
                         onAction={() => {
                           setLabelEmoji(label, emoji)

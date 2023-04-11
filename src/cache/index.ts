@@ -1,10 +1,14 @@
 import { Cache } from '@raycast/api'
 import { LabelsEmojis, WatchedLabel } from '../types'
 
-const cache = new Cache()
+const cache = new Cache({
+  namespace: 'gmail',
+})
 
 export function getCachedWatchedLabels(): WatchedLabel[] {
   const cached = cache.get('watchedLabels')
+
+  console.log({ cached })
 
   const list = cached ? JSON.parse(cached) : []
 
