@@ -1,5 +1,4 @@
-Raycast Gmail Extension
-=======================
+![Raycast Gmail Extension](https://raw.githubusercontent.com/vinpac/gmail-raycast-extension/main/assets/banner.jpg)
 
 The Raycast Gmail Extension is an extension for the Raycast app that allows you to quickly access your Gmail account and see how many unread emails you have. You can also see your emails categorized by labels, and choose emojis to represent those labels.
 
