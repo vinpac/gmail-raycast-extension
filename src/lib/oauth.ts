@@ -75,7 +75,7 @@ async function refreshTokens(refreshToken: string): Promise<OAuth.TokenResponse>
     const json = (await response.json()) as Record<string, string>
     console.error('refresh tokens error:', json)
 
-    if (json.error === 'invalid_request') {
+    if (json.error === 'invalid_request' || json.error === 'invalid_grant') {
       oauthClient.removeTokens()
     }
 
