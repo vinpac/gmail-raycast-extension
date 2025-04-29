@@ -8,8 +8,6 @@ const cache = new Cache({
 export function getCachedWatchedLabels(): WatchedLabel[] {
   const cached = cache.get('watchedLabels')
 
-  console.log({ cached })
-
   const list = cached ? JSON.parse(cached) : []
 
   return list.filter((item: WatchedLabel) => {

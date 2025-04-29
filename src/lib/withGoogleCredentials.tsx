@@ -1,5 +1,5 @@
 import { Detail, environment, MenuBarExtra, showToast, Toast } from '@raycast/api'
-import { useMemo, useState } from 'react'
+import { createContext, useMemo, useState } from 'react'
 import { createGoogleAPIFetcher, GoogleAPIFetch } from './gmail'
 
 import { authorize, oauthClient } from './oauth'
@@ -77,8 +77,22 @@ export function withGmailCredentials(component: JSX.Element) {
     }
   }
 
-  return component
+  return (
+    <LogoutContext.Provider
+      value={async () => {
+        session = undefined
+        await oauthClient.removeTokens()
+        forceRerender(x + 1)
+      }}
+    >
+      {component}
+    </LogoutContext.Provider>
+  )
 }
+
+export const LogoutContext = createContext<() => Promise<void>>(async () => {
+  // ...
+})
 
 export function getSession() {
   if (!session) {

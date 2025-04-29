@@ -19,7 +19,11 @@ export const createGoogleAPIFetcher = (sessionToken: string): GoogleAPIFetch => 
         Authorization: `Bearer ${sessionToken}`,
       },
     })
-      .then((res) => res.json() as Promise<TFetchData>)
+      .then(async (res) => {
+        const json = (await res.json()) as Promise<TFetchData>
+
+        return json
+      })
       .then((data) => {
         if ('error' in (data as object)) {
           const { error: errorData } = data as object as { error: { message: string } }

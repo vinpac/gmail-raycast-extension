@@ -68,6 +68,7 @@ async function refreshTokens(refreshToken: string): Promise<OAuth.TokenResponse>
       client_id: clientId,
       refresh_token: refreshToken,
       grant_type: 'refresh_token',
+      scope: 'https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/gmail.readonly',
     }),
   })
 

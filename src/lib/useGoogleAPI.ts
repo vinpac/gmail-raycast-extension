@@ -77,7 +77,7 @@ export function useGoogleAPI<Data>(config: Config<Data>) {
       return {
         isLoading: true,
         data,
-        error: false,
+        error: undefined,
       }
     }
 

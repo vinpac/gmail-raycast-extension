@@ -1,11 +1,12 @@
-import { Action, ActionPanel, Icon, List } from '@raycast/api'
-import { withGmailCredentials } from './lib/withGoogleCredentials'
+import { Action, ActionPanel, Detail, Icon, List } from '@raycast/api'
+import { LogoutContext, withGmailCredentials } from './lib/withGoogleCredentials'
 import { useGoogleAPI } from './lib/useGoogleAPI'
-import { useMemo, useState } from 'react'
+import { useContext, useMemo, useState } from 'react'
 import { emojis } from './lib/emojis'
 import { Label, WatchedLabel } from './types'
 import { getCachedWatchedLabels, setCachedWatchedLabels } from './cache'
 import { useLabelsEmojis } from './lib/useLabelEmojis'
+import { oauthClient } from './lib/oauth'
 
 const useAllLabels = () => {
   const query = useGoogleAPI<{
@@ -27,7 +28,6 @@ const useAllLabels = () => {
 function useWatchedLabels() {
   const [watchedLabels, setWatchedLabels] = useState<WatchedLabel[]>(() => getCachedWatchedLabels())
   const setPersistedWatchedLabels = (labels: WatchedLabel[]) => {
-    console.log({ labels })
     setCachedWatchedLabels(labels)
     setWatchedLabels(labels)
   }
@@ -36,7 +36,7 @@ function useWatchedLabels() {
 }
 
 function Configure() {
-  const { labels, isLoading } = useAllLabels()
+  const { labels, error, isLoading } = useAllLabels()
   const [typeFilter, setTypeFilter] = useState<string | undefined>(undefined)
   const [wachedLabels, setWatchedLabels] = useWatchedLabels()
   const { getLabelEmoji, labelEmojis, setLabelEmojis } = useLabelsEmojis()
@@ -145,8 +145,25 @@ function Configure() {
     )
   }
 
+  const logout = useContext(LogoutContext)
+  const actions = (
+    <ActionPanel title="#1 in raycast/extensions">
+      <Action
+        title="Re-Authenticate"
+        onAction={async () => {
+          await logout()
+        }}
+      />
+    </ActionPanel>
+  )
+
+  if (error) {
+    return <Detail markdown={`# Error\n\n${error.message}`} actions={actions} />
+  }
+
   return (
     <List
+      actions={actions}
       isLoading={isLoading}
       searchBarAccessory={
         <List.Dropdown tooltip="Select Todo List" value={typeFilter} onChange={(newValue) => setTypeFilter(newValue)}>
